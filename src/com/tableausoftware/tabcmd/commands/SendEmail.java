@@ -1,10 +1,17 @@
 package com.tableausoftware.tabcmd.commands;
 
-
 import com.tableausoftware.tabcmd.http.HttpRequest;
 import com.tableausoftware.tabcmd.session.Session;
+import com.tableausoftware.core.util.SMTPClientWithFile;
+import javax.mail.MessagingException;
+import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+
+
 
 public class SendEmail extends Command {
 
@@ -12,31 +19,92 @@ public class SendEmail extends Command {
         return "sendmail";
     }
 
-    public String getUsage()
-    {
-        return "tabcmd sendmail -t RECIPIENT -f FROM --server SMTP --";
+    public String getUsage() {
+        return "tabcmd sendmail [options]";
     }
 
-    public String getShortDescription()
-    {
+    public String getShortDescription() {
         return "Send email from command line using SMTP server.";
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return getShortDescription();
-
     }
 
-    public boolean needsSession()
-    {
+    public boolean needsSession() {
         return false;
     }
 
-    public HttpRequest execute(Session session, CommandLine commandLine, List<String> remainingArgs)
-    {
+    public HttpRequest execute(Session session, CommandLine commandLine, List<String> remainingArgs) {
+        List<String> recipients = new ArrayList<String>();
+        recipients.add("tamas.foldi@ge.com");
 
-        System.out.print("Hey Ho!");
+        try {
+            SMTPClientWithFile client = new SMTPClientWithFile(null, null, commandLine.getOptionValue("smtp"), 25, false);
+
+            client.sendMailWithFile();
+        } catch (MessagingException ex){
+            m_logger.error(ex);
+        }
         return null;
+    }
+
+
+    public Options getOptions(Options options) {
+        OptionBuilder.withLongOpt("smtp-host");
+        OptionBuilder.withDescription("SMTP Server's address");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("SMTPSERVER");
+        options.addOption(OptionBuilder.create(""));
+
+        OptionBuilder.withLongOpt("to");
+        OptionBuilder.withDescription("Recipient addresses, separated by semicolon (;) character");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("TO_EMAIL");
+        options.addOption(OptionBuilder.create(""));
+
+        OptionBuilder.withLongOpt("from");
+        OptionBuilder.withDescription("From address");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("FROM_EMAIL");
+        options.addOption(OptionBuilder.create(""));
+
+        OptionBuilder.withLongOpt("subject");
+        OptionBuilder.withDescription("Subject of the email");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("TO_EMAIL");
+        options.addOption(OptionBuilder.create(""));
+
+        OptionBuilder.withLongOpt("file");
+        OptionBuilder.withDescription("File to include");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("FILENAME");
+        options.addOption(OptionBuilder.create(""));
+
+        OptionBuilder.withLongOpt("body");
+        OptionBuilder.withDescription("Body Text");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("EMAIL_TEXT_BODY");
+        options.addOption(OptionBuilder.create(""));
+
+        OptionBuilder.withLongOpt("smtp-port");
+        OptionBuilder.withDescription("SMTP Server's port for incoming communication");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("PORT");
+        options.addOption(OptionBuilder.create(""));
+
+        OptionBuilder.withLongOpt("smtp-user");
+        OptionBuilder.withDescription("User name for SMTP authentication");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("USER");
+        options.addOption(OptionBuilder.create(""));
+
+        OptionBuilder.withLongOpt("smtp-passw");
+        OptionBuilder.withDescription("SMTP User's password");
+        OptionBuilder.hasArg();
+        OptionBuilder.withArgName("PASSWORD");
+        options.addOption(OptionBuilder.create(""));
+
+        return options;
     }
 }
