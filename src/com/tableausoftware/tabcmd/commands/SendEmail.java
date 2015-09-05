@@ -3,14 +3,13 @@ package com.tableausoftware.tabcmd.commands;
 import com.tableausoftware.tabcmd.http.HttpRequest;
 import com.tableausoftware.tabcmd.session.Session;
 import com.tableausoftware.core.util.SMTPClientWithFile;
+
 import javax.mail.MessagingException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-
 
 
 public class SendEmail extends Command {
@@ -36,15 +35,29 @@ public class SendEmail extends Command {
     }
 
     public HttpRequest execute(Session session, CommandLine commandLine, List<String> remainingArgs) {
-        List<String> recipients = new ArrayList<String>();
-        recipients.add("tamas.foldi@ge.com");
+        int port = 25;
+
+        if (commandLine.getOptionValue("smtp-port") != null)
+            port = Integer.parseInt(commandLine.getOptionValue("smtp-port"));
 
         try {
-            SMTPClientWithFile client = new SMTPClientWithFile(null, null, commandLine.getOptionValue("smtp"), 25, false);
+            SMTPClientWithFile client = new SMTPClientWithFile(
+                    commandLine.getOptionValue("smtp-user"),
+                    commandLine.getOptionValue("smtp-passw"),
+                    commandLine.getOptionValue("smtp-host"),
+                    port,
+                    true);
 
-            client.sendMailWithFile();
-        } catch (MessagingException ex){
-            m_logger.error(ex);
+            client.sendMailWithFile(
+                    commandLine.getOptionValue("to"),
+                    commandLine.getOptionValue("from"),
+                    commandLine.getOptionValue("subject"),
+                    commandLine.getOptionValue("body"),
+                    commandLine.getOptionValue("file"));
+
+        } catch (MessagingException ex) {
+            m_logger.debug(ex);
+            throw new RuntimeException(ex);
         }
         return null;
     }
