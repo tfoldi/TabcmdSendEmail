@@ -72,7 +72,7 @@ public class SendEmail extends Command {
         options.addOption(OptionBuilder.create());
 
         OptionBuilder.withLongOpt("to");
-        OptionBuilder.withDescription("Recipient addresses, separated by semicolon (;) character");
+        OptionBuilder.withDescription("Recipient addresses, separated by coma (,) character");
         OptionBuilder.hasArg();
         OptionBuilder.isRequired(true);
         OptionBuilder.withArgName("TO_EMAIL");
