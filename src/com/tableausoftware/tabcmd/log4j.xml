@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER" "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <!-- Appenders -->
+    <appender name="file" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="tabcmd.log" />
+        <param name="MaxBackupIndex" value="10" />
+        <param name="MaxFileSize" value="20MB" /> 
+        <param name="Append" value="true" />
+        <param name="ImmediateFlush" value="true" />
+        <param name="encoding" value="UTF-8" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[${pid}] %-5p %d{ISO8601}: %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="stderr" class="org.apache.log4j.ConsoleAppender">
+        <param name="threshold" value="warn" />
+        <param name="target" value="System.err"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="  *** %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+        <param name="threshold" value="info" />
+        <param name="target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="===== %m%n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="info" />
+            <param name="LevelMax" value="info" />
+        </filter>
+    </appender>
+
+    <!-- Application Loggers -->
+    <logger name="com.tableausoftware">
+        <level value="trace" />
+    </logger>
+    
+    <!-- Root Logger -->
+    <root>
+        <priority value="warn" />
+        <appender-ref ref="file" />
+        <appender-ref ref="stderr" />
+        <appender-ref ref="stdout" />
+    </root>
+
+</log4j:configuration>
