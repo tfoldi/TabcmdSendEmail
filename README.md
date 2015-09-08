@@ -40,7 +40,7 @@ The `--smtp-user`, `--smtp-passw` and `--port` command line options are optional
 
 ## Installation
 
-Practically you need to copy the two class files into `app-tabcmd-latest-jar.jar`, located in the `lib` folder.
+Practically you need to copy the two class files into `app-tabcmd-latest-jar.jar`, located in the `lib` folder. I uploaded the binaries under [releases](https://github.com/tfoldi/TabcmdSendEmail/releases). Download it and merge its contents with `app-tabcmd-latest-jar.jar` keeping the same directory name as it is in my zip file.
 
  
 ## Disclaimer 
